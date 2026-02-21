@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MyUtilityScripts
@@ -13,6 +15,17 @@ namespace MyUtilityScripts
                 // Swap
                 (list[i], list[randomIndex]) = (list[randomIndex], list[i]);
             }
+        }
+        
+        public static IEnumerator RunSequential(params IEnumerator[] coroutines)
+        {
+            return coroutines.GetEnumerator();
+        }
+        
+        public static IEnumerator RunParallel(MonoBehaviour owner, params IEnumerator[] coroutines)
+        {
+            var running = coroutines.Select(owner.StartCoroutine).ToList();
+            foreach (var coroutine in running) yield return coroutine;
         }
     }
 }

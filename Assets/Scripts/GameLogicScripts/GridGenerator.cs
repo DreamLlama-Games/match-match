@@ -55,6 +55,7 @@ namespace GameLogicScripts
                     
                     cardRect.anchoredPosition = new Vector3 (posX, posY, 0f);
                     k = k + 1 < cards.Count ? k + 1 : 0; //reusing same elements
+                    cards[k].SetTransform(); //Remember original transform values
                 }
             }
         }
