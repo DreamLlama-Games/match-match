@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace SOScripts
@@ -22,7 +21,7 @@ namespace SOScripts
         
         private readonly Dictionary<int, IndividualCardData> _cardDictionary = new();
 
-        private void OnValidate()
+        public void Initialize()
         {
             foreach (var card in cards) _cardDictionary.Add(card.id, card);
         }
@@ -30,7 +29,7 @@ namespace SOScripts
         public IndividualCardData GetCard(int id)
         {
             return !_cardDictionary.TryGetValue(id, out var card) ? 
-                throw new RuntimeWrappedException("Card Not Found With Valid Id: " + id) : 
+                throw new System.Exception("Card Not Found With Valid Id: " + id) : 
                 card;
         }
     }

@@ -12,4 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874d04a0bf074758aa3bee9ee7a1900e, type: 3}
   m_Name: CardData
   m_EditorClassIdentifier: 
-  cards: []
+  cards:
+  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardName: One
+    id: 0
+  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardName: Two
+    id: 1
+  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardName: Three
+    id: 2
+  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardName: Four
+    id: 3
+  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardName: Five
+    id: 4
+  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    cardName: Six
+    id: 5
