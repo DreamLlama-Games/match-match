@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using SOScripts;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,6 +46,7 @@ namespace GameLogicScripts
 
         //To track open cards
         private readonly Dictionary<int, Card> _openCards = new();
+        private Card _lastSeenCard;
 
         private void Start()
         {
@@ -110,6 +112,7 @@ namespace GameLogicScripts
 
         private void OnCardClicked(Card card, Button button)
         {
+            RemoveOldest(card);
             Debug.Log($"Card {card.ID} clicked");
             if (_openCards.TryGetValue(card.ID, out var existingTwin))
             {
@@ -120,6 +123,20 @@ namespace GameLogicScripts
             _cardAnimationHandler.OnCardSelected(card, cardFlipAnimationDuration, ClosedCardRotation, OpenCardRotation);
             OnCardSelected(card, button);
             StartCoroutine(TimeOutTask(ButtonDisableTimeOutDuration, onEnd: () => { OnCardDeselected(card,button); }));
+        }
+
+        private void RemoveOldest(Card card)
+        {
+            if (_openCards.Count == 0)
+            {
+                _lastSeenCard = card;
+                return;
+            }
+
+            if (_openCards.Count != 2) return;
+            
+            _openCards.Remove(_lastSeenCard.ID);
+            _lastSeenCard = _openCards.First().Value;
         }
     }
 }
