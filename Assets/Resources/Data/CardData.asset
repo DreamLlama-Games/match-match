@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874d04a0bf074758aa3bee9ee7a1900e, type: 3}
   m_Name: CardData
   m_EditorClassIdentifier: 
+  cards: []
