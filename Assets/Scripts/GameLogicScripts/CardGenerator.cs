@@ -34,7 +34,7 @@ namespace GameLogicScripts
             var card = Object.Instantiate(cardPrefab);
             card.name = name;
             
-            var rectTransform = card.GetComponent<RectTransform>();
+            if(!card.TryGetComponent<RectTransform>(out var rectTransform)) throw new System.Exception("Not a RectTransform");
             var imageComponents = card.GetComponentsInChildren<Image>();
             
             //For front and back

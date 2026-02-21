@@ -15,7 +15,7 @@ namespace GameLogicScripts
             _cardAspectRatio = cardAspectRatio;
         }
 
-        private void GenerateGrid(RectTransform parentContainer, List<Card> cards, int rows, int cols, float verticalPadding, float horizontalPadding)
+        public void GenerateGrid(RectTransform parentContainer, List<Card> cards, int rows, int cols, float verticalPadding, float horizontalPadding)
         {
             cards.Shuffle(); //Shuffle the cards randomly
             
