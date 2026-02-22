@@ -24,7 +24,8 @@ namespace VisualAnimationScripts
         private readonly Dictionary<RectTransform, Coroutine> _cardAnimationHandles = new();
 
         public CardAnimationHandler(MonoBehaviour animationOwner, float cardFlipDuration, float cardMoveDuration, 
-            float cardRevealDuration, float cardFlashDuration, float flashScaleFactor, float shrinkScaleFactor, float openCardRotation, float closedCardRotation)
+            float cardRevealDuration, float cardFlashDuration, float flashScaleFactor, float shrinkScaleFactor,
+            float openCardRotation, float closedCardRotation)
         {
             _animationOwner = animationOwner;
             _cardFlipDuration = cardFlipDuration;

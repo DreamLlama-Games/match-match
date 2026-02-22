@@ -36,11 +36,15 @@ namespace GameLogicScripts
         [SerializeField] private float cardRevealDuration = 0.5f;
         [SerializeField] private RectTransform discardPileArea;
         
+        [Header("Scoring data")]
+        [SerializeField] private TMPro.TMP_Text scoringText;
+        
         private const float OpenCardRotation = 180f;
         private const float ClosedCardRotation = 0f;
         
         private float _buttonDisableTimeOutDuration = 0.5f;
-        
+
+        private ScoreHandler _scoreHandler;
         private CardGenerator _cardGenerator;
         private GridGenerator _gridGenerator;
         private CardAnimationHandler _cardAnimationHandler;
@@ -48,17 +52,22 @@ namespace GameLogicScripts
         //To track open cards
         private readonly Dictionary<int, Card> _openCards = new();
         private Card _lastSeenCard;
+        
+        //Game events
+        private readonly GameEvents _gameEvents = new();
 
         private void Start()
         {
             //setup handlers
             _cardGenerator = new CardGenerator();
             _gridGenerator = new GridGenerator(maxCardHeight, cardAspectRatio);
+            _scoreHandler = new ScoreHandler(scoringText, _gameEvents);
             _cardAnimationHandler = new CardAnimationHandler(this,cardFlipAnimationDuration,cardMoveAnimationDuration,
                 cardRevealDuration,cardFlashAnimationDuration,cardFlashScale,cardShrinkScale,OpenCardRotation,ClosedCardRotation);
             _buttonDisableTimeOutDuration = 2 * cardFlipAnimationDuration + cardRevealDuration;
             
             SetupView();
+            _gameEvents.GameStarted?.Invoke();
         }
 
         private void SetupView()
@@ -82,6 +91,8 @@ namespace GameLogicScripts
             _cardAnimationHandler?.OnTwinFound(twin1, twin2, discardPileArea);
             _openCards.Remove(twin1.ID);
             _openCards.Remove(twin2.ID);
+
+            _gameEvents?.MatchingCardSelected?.Invoke(twin1, twin2);
         }
 
         private IEnumerator TimeOutTask(float duration, Action onStart = null, Action onEnd = null)
@@ -100,6 +111,8 @@ namespace GameLogicScripts
         {
             _openCards.Add(card.ID, card);
             _cardAnimationHandler.OnCardSelected(card);
+            
+            _gameEvents?.CardSelected?.Invoke(card);
         }
 
         private void ResetCardAfterFlash(Card card, Button button)
@@ -135,6 +148,11 @@ namespace GameLogicScripts
             
             _openCards.Remove(_lastSeenCard.ID);
             _lastSeenCard = _openCards.First().Value;
+        }
+
+        private void OnDisable()
+        {
+            _scoreHandler.Unsubscribe(_gameEvents);
         }
     }
 }
