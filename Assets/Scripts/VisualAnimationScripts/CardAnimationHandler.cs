@@ -9,45 +9,70 @@ namespace VisualAnimationScripts
     public class CardAnimationHandler
     {
         private readonly MonoBehaviour _animationOwner;
+        
+        //Animation duration
+        private readonly float _cardFlipDuration;
+        private readonly float _cardMoveDuration;
+        private readonly float _cardRevealDuration;
+        private readonly float _cardFlashDuration;
+        private readonly float _flashScaleFactor;
+        private readonly float _shrinkScaleFactor;
+        private readonly float _openCardRotation;
+        private readonly float _closedCardRotation;
+
+
         private readonly Dictionary<RectTransform, Coroutine> _cardAnimationHandles = new();
 
-        public CardAnimationHandler(MonoBehaviour animationOwner)
+        public CardAnimationHandler(MonoBehaviour animationOwner, float cardFlipDuration, float cardMoveDuration, 
+            float cardRevealDuration, float cardFlashDuration, float flashScaleFactor, float shrinkScaleFactor, float openCardRotation, float closedCardRotation)
         {
             _animationOwner = animationOwner;
+            _cardFlipDuration = cardFlipDuration;
+            _cardMoveDuration = cardMoveDuration;
+            _cardRevealDuration = cardRevealDuration;
+            _cardFlashDuration = cardFlashDuration;
+            _flashScaleFactor = flashScaleFactor;
+            _shrinkScaleFactor = shrinkScaleFactor;
+            _openCardRotation = openCardRotation;
+            _closedCardRotation = closedCardRotation;
         }
 
-        public void OnCardSelected(Card card,float flipDuration, float initialYRotation, float finalYRotation)
+        public void OnCardSelected(Card card)
         {
             var handle = _animationOwner?.StartCoroutine(MyUtils.RunSequential(
-                FlipCard(card, flipDuration, initialYRotation, finalYRotation),
-                Wait(0.5f),
-                FlipCard(card, flipDuration, finalYRotation, initialYRotation)
+                FlipCard(card, _cardFlipDuration, _closedCardRotation, _openCardRotation),
+                Wait(_cardRevealDuration),
+                FlipCard(card, _cardFlipDuration, _openCardRotation, _closedCardRotation)
             ));
             
             if(!_cardAnimationHandles.TryGetValue(card.CardTransform, out _)) _cardAnimationHandles.Add(card.CardTransform, handle);
             _cardAnimationHandles[card.CardTransform] = handle;
         }
 
-        public void OnTwinFound(Card twin1, Card twin2, float finalYRotation, float flashDuration, float flashScaleFactor, float shrinkScaleFactor, float moveDuration, RectTransform target)
+        public void OnTwinFound(Card twin1, Card twin2, RectTransform target)
         {
             twin1.ResetTransform();
             twin2.ResetTransform();
+            
+            //Make it appear on top
+            twin1.CardTransform.SetAsLastSibling();
+            twin2.CardTransform.SetAsLastSibling();
             
             //stop previous running coroutines
             if(_cardAnimationHandles.TryGetValue(twin1.CardTransform, out var handle1)) _animationOwner?.StopCoroutine(handle1);
             if(_cardAnimationHandles.TryGetValue(twin2.CardTransform, out var handle2)) _animationOwner?.StopCoroutine(handle2);
             
-            twin1.CardTransform.localEulerAngles = new Vector3(0, finalYRotation, 0); // open state
-            twin2.CardTransform.localEulerAngles = new Vector3(0, finalYRotation, 0); // open state
+            twin2.CardTransform.localEulerAngles = new Vector3(0, _openCardRotation, 0); // open state
             
             _animationOwner?.StartCoroutine(MyUtils.RunSequential(
+                FlipCard(twin1, _cardFlipDuration, _closedCardRotation, _openCardRotation),
                 MyUtils.RunParallel(_animationOwner,
-                    FlashCard(twin1, flashDuration, flashScaleFactor), FlashCard(twin2, flashDuration, flashScaleFactor)),
+                    FlashCard(twin1, _cardFlashDuration, _flashScaleFactor), FlashCard(twin2, _cardFlashDuration, _flashScaleFactor)),
                 Wait(0.5f),
                 MyUtils.RunParallel(
                     _animationOwner,
-                    MoveCard(twin1,moveDuration,target), MoveCard(twin2, moveDuration, target),
-                    FlashCard(twin1, moveDuration, shrinkScaleFactor), FlashCard(twin2, moveDuration, shrinkScaleFactor)
+                    MoveCard(twin1,_cardMoveDuration,target), MoveCard(twin2, _cardMoveDuration, target),
+                    FlashCard(twin1, _cardMoveDuration, _shrinkScaleFactor), FlashCard(twin2, _cardMoveDuration, _shrinkScaleFactor)
                     )
                 ));
             

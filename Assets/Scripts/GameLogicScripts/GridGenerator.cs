@@ -26,10 +26,21 @@ namespace GameLogicScripts
             var availableHeight = totalHeight - (verticalPadding * (cols - 1));
             var availableWidth = totalWidth - (horizontalPadding * (rows - 1));
             
+            if(availableWidth < 0 ||  availableHeight < 0) throw new System.Exception("Grid generation error: not enough space to accomodate cards");
+
+            //Calculate expected card width
+            var prefCardWidth = availableWidth / rows;
+            var newCardWidth = _maxCardHeight * _cardAspectRatio;
+            prefCardWidth = prefCardWidth > newCardWidth ? newCardWidth  : prefCardWidth;
+            
+            //Calculate expected card height
+            var prefCardHeight = availableHeight / cols;
+            var newCardHeight = prefCardWidth / _cardAspectRatio;
+            prefCardHeight = prefCardHeight > newCardHeight ? newCardHeight : prefCardHeight;
+            
             //Account for card aspect ratio
-            var cardHeight = availableWidth / cols;
-            cardHeight = cardHeight > _maxCardHeight ? _maxCardHeight : cardHeight;
-            var cardWidth = cardHeight * _cardAspectRatio;
+            var cardWidth = prefCardWidth;
+            var cardHeight = prefCardHeight > _maxCardHeight ? _maxCardHeight : prefCardHeight;
             
             //Because anchor is in the center
             var halfCardWidth = cardWidth / 2; 

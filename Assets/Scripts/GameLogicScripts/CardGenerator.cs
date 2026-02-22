@@ -38,10 +38,10 @@ namespace GameLogicScripts
             var imageComponents = card.GetComponentsInChildren<Image>();
             
             //For front and back
-            if (imageComponents.Length != 2) return rectTransform;
+            if (imageComponents.Length < 2) return rectTransform;
 
-            imageComponents[0].sprite = front;
-            imageComponents[1].sprite = back;
+            imageComponents[0].sprite = back;
+            imageComponents[1].sprite = front;
             return rectTransform;
         }
     }

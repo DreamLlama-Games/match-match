@@ -33,12 +33,13 @@ namespace GameLogicScripts
         [SerializeField] private float cardMoveAnimationDuration = 0.5f;
         [SerializeField] private float cardFlashScale = 1.1f;
         [SerializeField] private float cardShrinkScale = 0.3f;
+        [SerializeField] private float cardRevealDuration = 0.5f;
         [SerializeField] private RectTransform discardPileArea;
         
         private const float OpenCardRotation = 180f;
         private const float ClosedCardRotation = 0f;
         
-        private const float ButtonDisableTimeOutDuration = 1f;
+        private float _buttonDisableTimeOutDuration = 0.5f;
         
         private CardGenerator _cardGenerator;
         private GridGenerator _gridGenerator;
@@ -53,7 +54,9 @@ namespace GameLogicScripts
             //setup handlers
             _cardGenerator = new CardGenerator();
             _gridGenerator = new GridGenerator(maxCardHeight, cardAspectRatio);
-            _cardAnimationHandler = new CardAnimationHandler(this);
+            _cardAnimationHandler = new CardAnimationHandler(this,cardFlipAnimationDuration,cardMoveAnimationDuration,
+                cardRevealDuration,cardFlashAnimationDuration,cardFlashScale,cardShrinkScale,OpenCardRotation,ClosedCardRotation);
+            _buttonDisableTimeOutDuration = 2 * cardFlipAnimationDuration + cardRevealDuration;
             
             SetupView();
         }
@@ -76,12 +79,7 @@ namespace GameLogicScripts
 
         private void MatchFound(Card twin1, Card twin2)
         {
-            _cardAnimationHandler?.OnTwinFound(twin1, twin2, 
-                OpenCardRotation, cardFlashAnimationDuration,
-                cardFlashScale,cardShrinkScale,
-                cardMoveAnimationDuration,
-                discardPileArea);
-            
+            _cardAnimationHandler?.OnTwinFound(twin1, twin2, discardPileArea);
             _openCards.Remove(twin1.ID);
             _openCards.Remove(twin2.ID);
         }
@@ -98,31 +96,31 @@ namespace GameLogicScripts
             onEnd?.Invoke();
         }
 
-        private void OnCardSelected(Card card, Button button)
+        private void OnCardSelected(Card card)
         {
             _openCards.Add(card.ID, card);
-            button.interactable = false;
+            _cardAnimationHandler.OnCardSelected(card);
         }
 
-        private void OnCardDeselected(Card card, Button button)
+        private void ResetCardAfterFlash(Card card, Button button)
         {
-            _openCards.Remove(card.ID);
-            button.interactable = true;
+            StartCoroutine(TimeOutTask(_buttonDisableTimeOutDuration, onEnd: () => { button.interactable = true; }));
+            StartCoroutine(TimeOutTask(cardFlipAnimationDuration + cardRevealDuration, onEnd: () => { _openCards.Remove(card.ID); }));
         }
 
         private void OnCardClicked(Card card, Button button)
         {
             RemoveOldest(card);
-            Debug.Log($"Card {card.ID} clicked");
+            button.interactable = false;
+
             if (_openCards.TryGetValue(card.ID, out var existingTwin))
             {
                 MatchFound(card, existingTwin);
                 return;
             }
             
-            _cardAnimationHandler.OnCardSelected(card, cardFlipAnimationDuration, ClosedCardRotation, OpenCardRotation);
-            OnCardSelected(card, button);
-            StartCoroutine(TimeOutTask(ButtonDisableTimeOutDuration, onEnd: () => { OnCardDeselected(card,button); }));
+            OnCardSelected(card);
+            ResetCardAfterFlash(card, button);
         }
 
         private void RemoveOldest(Card card)

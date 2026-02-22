@@ -13,27 +13,27 @@ MonoBehaviour:
   m_Name: CardData
   m_EditorClassIdentifier: 
   cards:
-  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardName: One
+  - cardBack: {fileID: 896032641, guid: 0f9ffb7c5f2eb1347ba3fff6f18dc3a0, type: 3}
+    cardFront: {fileID: -1120595118, guid: 83343e259af877e48ba5eb5be6def3e6, type: 3}
+    cardName: Chicken
     id: 0
-  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardName: Two
+  - cardBack: {fileID: 896032641, guid: 0f9ffb7c5f2eb1347ba3fff6f18dc3a0, type: 3}
+    cardFront: {fileID: 706177497, guid: 83343e259af877e48ba5eb5be6def3e6, type: 3}
+    cardName: Octopus
     id: 1
-  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardName: Three
+  - cardBack: {fileID: 896032641, guid: 0f9ffb7c5f2eb1347ba3fff6f18dc3a0, type: 3}
+    cardFront: {fileID: -1199870852, guid: 83343e259af877e48ba5eb5be6def3e6, type: 3}
+    cardName: Starfish
     id: 2
-  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardName: Four
+  - cardBack: {fileID: 896032641, guid: 0f9ffb7c5f2eb1347ba3fff6f18dc3a0, type: 3}
+    cardFront: {fileID: 730697170, guid: 83343e259af877e48ba5eb5be6def3e6, type: 3}
+    cardName: Platypus
     id: 3
-  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardName: Five
+  - cardBack: {fileID: 896032641, guid: 0f9ffb7c5f2eb1347ba3fff6f18dc3a0, type: 3}
+    cardFront: {fileID: -2032373909, guid: 83343e259af877e48ba5eb5be6def3e6, type: 3}
+    cardName: Elephant
     id: 4
-  - cardBack: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardFront: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    cardName: Six
+  - cardBack: {fileID: 896032641, guid: 0f9ffb7c5f2eb1347ba3fff6f18dc3a0, type: 3}
+    cardFront: {fileID: -1143437396, guid: 83343e259af877e48ba5eb5be6def3e6, type: 3}
+    cardName: Crab
     id: 5
