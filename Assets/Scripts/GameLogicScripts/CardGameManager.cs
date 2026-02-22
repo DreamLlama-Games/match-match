@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MyUtilityScripts;
 using SOScripts;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VisualAnimationScripts;
 
@@ -115,8 +117,20 @@ namespace GameLogicScripts
             var buffer = 0.5f;
             var animationDuration =
                 cardFlashAnimationDuration + cardFlipAnimationDuration + cardMoveAnimationDuration;
-            StartCoroutine(
-                TimeOutTask(animationDuration + buffer, onEnd: () => { _gameEvents?.GameOver?.Invoke(); }));
+
+            StartCoroutine(MyUtils.RunSequential(
+                    TimeOutTask(animationDuration + buffer, onEnd: () =>
+                    {
+                        _gameEvents?.GameOver?.Invoke();
+                    }),
+                    LoadMainMenuScene(1f)
+            ));
+        }
+
+        private IEnumerator LoadMainMenuScene(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            SceneManager.LoadScene("MainMenuScene");
         }
 
         private IEnumerator TimeOutTask(float duration, Action onStart = null, Action onEnd = null)

@@ -18,6 +18,9 @@ namespace GameLogicScripts
         private const int MaxSeenCount = 2;
         private const int AverageSeenCount = 4;
         
+        //Combo multiplier
+        private int _comboMultiplier;
+        
         private readonly Dictionary<string, int> _seenCount = new(); 
         
         public ScoreHandler(TMP_Text scoreText, GameEvents gameEvents)
@@ -32,6 +35,7 @@ namespace GameLogicScripts
             gameEvents.GameOver += OnGameOver;
             gameEvents.CardSelected += OnCardSelected;
             gameEvents.MatchingCardSelected += OnMatchFound;
+            gameEvents.CardMisMatch += OnCardMisMatch;
         }
 
         public void Unsubscribe(GameEvents gameEvents)
@@ -40,6 +44,12 @@ namespace GameLogicScripts
             gameEvents.GameOver -= OnGameOver;
             gameEvents.CardSelected -= OnCardSelected;
             gameEvents.MatchingCardSelected -= OnMatchFound;
+            gameEvents.CardMisMatch -= OnCardMisMatch;
+        }
+        
+        private void OnCardMisMatch()
+        {
+            _comboMultiplier = 0;
         }
 
         private void SetScore(int score)
@@ -65,21 +75,22 @@ namespace GameLogicScripts
 
         private void OnMatchFound(Card twin1, Card twin2)
         {
+            _comboMultiplier += 1;
             if (_seenCount.TryGetValue(twin1.CardName, out var count))
             {
                 var allottedScore = count <= MaxSeenCount ? MaxScore : 
                     count <= AverageSeenCount ? AverageScore : MinScore;
-                SetScore(_activeScore + allottedScore);
+                SetScore(_activeScore + allottedScore * _comboMultiplier);
                 return;
             }
-            SetScore(_activeScore + MaxScore);
+            SetScore(_activeScore + MaxScore * _comboMultiplier);
         }
 
         private void UpdateHighScore()
         {
             var highScore = PlayerPrefs.GetInt("HighScore");
             
-            if (highScore <= _activeScore) return;
+            if (highScore >= _activeScore) return;
             PlayerPrefs.SetInt("HighScore", _activeScore);
             PlayerPrefs.Save();
         }
