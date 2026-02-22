@@ -8,6 +8,7 @@ namespace GameLogicScripts
         public Action GameStarted;
         public Action<Card> CardSelected;
         public Action<Card,Card> MatchingCardSelected;
+        public Action CardMisMatch;
         public Action GameOver;
     }
 }

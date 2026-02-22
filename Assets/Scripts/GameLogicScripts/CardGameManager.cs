@@ -39,6 +39,9 @@ namespace GameLogicScripts
         [Header("Scoring data")]
         [SerializeField] private TMPro.TMP_Text scoringText;
         
+        [Header("Sound")]
+        [SerializeField] private SoundPlayer soundPlayer;
+        
         private int _matchesCount;
         private int _maximumMatches;
         
@@ -46,7 +49,7 @@ namespace GameLogicScripts
         private const float ClosedCardRotation = 0f;
         
         private float _buttonDisableTimeOutDuration = 0.5f;
-
+        
         private ScoreHandler _scoreHandler;
         private CardGenerator _cardGenerator;
         private GridGenerator _gridGenerator;
@@ -62,6 +65,7 @@ namespace GameLogicScripts
         private void Start()
         {
             //setup handlers
+            soundPlayer?.Subscribe(_gameEvents);
             _cardGenerator = new CardGenerator();
             _gridGenerator = new GridGenerator(maxCardHeight, cardAspectRatio);
             _scoreHandler = new ScoreHandler(scoringText, _gameEvents);
@@ -152,6 +156,8 @@ namespace GameLogicScripts
                 return;
             }
             
+            if(_openCards.Count != 0)
+                _gameEvents.CardMisMatch?.Invoke();
             OnCardSelected(card);
             ResetCardAfterFlash(card, button);
         }
@@ -172,6 +178,7 @@ namespace GameLogicScripts
 
         private void OnDisable()
         {
+            soundPlayer?.Unsubscribe(_gameEvents);
             _scoreHandler.Unsubscribe(_gameEvents);
         }
     }
