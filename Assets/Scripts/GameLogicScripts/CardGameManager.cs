@@ -39,6 +39,9 @@ namespace GameLogicScripts
         [Header("Scoring data")]
         [SerializeField] private TMPro.TMP_Text scoringText;
         
+        private int _matchesCount;
+        private int _maximumMatches;
+        
         private const float OpenCardRotation = 180f;
         private const float ClosedCardRotation = 0f;
         
@@ -74,6 +77,10 @@ namespace GameLogicScripts
         {
             var cardsList = _cardGenerator.Generate(cardsData, columns, rows, cardPrefab);
             _gridGenerator.GenerateGrid(cardsContainer, cardsList, rows, columns, verticalPadding, horizontalPadding);
+            
+            _matchesCount = 0;
+            _maximumMatches = (int)(cardsList.Count * 0.5);
+            
             AssignButtonListeners(cardsList);
         }
 
@@ -93,6 +100,19 @@ namespace GameLogicScripts
             _openCards.Remove(twin2.ID);
 
             _gameEvents?.MatchingCardSelected?.Invoke(twin1, twin2);
+
+            _matchesCount += 1;
+            if (_matchesCount != _maximumMatches) return;
+            EndGame();
+        }
+
+        private void EndGame()
+        {
+            var buffer = 0.5f;
+            var animationDuration =
+                cardFlashAnimationDuration + cardFlipAnimationDuration + cardMoveAnimationDuration;
+            StartCoroutine(
+                TimeOutTask(animationDuration + buffer, onEnd: () => { _gameEvents?.GameOver?.Invoke(); }));
         }
 
         private IEnumerator TimeOutTask(float duration, Action onStart = null, Action onEnd = null)
